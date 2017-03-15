@@ -26,4 +26,20 @@ public class DrinkToFillation extends Model {
     public ResultSet get(String sql, Connection connection) throws SQLException {
         return connection.createStatement().executeQuery(sql);
     }
+
+    public Fillation getFillation() {
+        return fillation;
+    }
+
+    public void setFillation(Fillation fillation) {
+        this.fillation = fillation;
+    }
+
+    public Drink getDrink() {
+        return drink;
+    }
+
+    public void setDrink(Drink drink) {
+        this.drink = drink;
+    }
 }

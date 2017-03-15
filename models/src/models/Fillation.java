@@ -37,4 +37,44 @@ public class Fillation extends Owner {
     public ResultSet get(String sql, Connection connection) throws SQLException {
         return connection.createStatement().executeQuery(sql);
     }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Boolean getGeneral() {
+        return general;
+    }
+
+    public void setGeneral(Boolean general) {
+        this.general = general;
+    }
+
+    public FastFood getFast_food() {
+        return fast_food;
+    }
+
+    public void setFast_food(FastFood fast_food) {
+        this.fast_food = fast_food;
+    }
 }

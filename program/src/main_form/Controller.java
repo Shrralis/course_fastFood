@@ -11,10 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import models.DateWorker;
-import models.Owner;
-import models.ServerQuery;
-import models.ServerResult;
+import models.*;
 import server.DatabaseWorker;
 
 import java.io.IOException;
@@ -24,43 +21,23 @@ import java.util.HashMap;
 @SuppressWarnings("unchecked")
 public class Controller {
     @FXML private TabPane tabs;
-    @FXML private TableView<Result> tableResults;
-    @FXML private TableView<Race> tableRaces;
-    @FXML private TableView<Team> tableTeams;
-    @FXML TableColumn<Team, String> columnBirthDateTableTeams;
-    @FXML TableColumn<Team, String> columnFirstRaceDateTableTeams;
-    @FXML private TableView<Pilot> tablePilots;
-    @FXML TableColumn<Pilot, String> columnBirthDateTablePilots;
-    @FXML TableColumn<Pilot, String> columnFirstRaceDateTablePilots;
-    @FXML private TableView<Sponsor> tableSponsors;
-    @FXML private TableView<Car> tableCars;
+    @FXML private TableView<FastFood> tableFast_foods;
+    @FXML TableColumn<FastFood, String> columnCompanyTableFast_foods;
+    @FXML private TableView<Company> tableComanies;
+    @FXML private TableView<Fillation> tableFillations;
+    @FXML TableColumn<Fillation, String> columnFast_foodTableFillations;
+    @FXML private TableView<Meal> tableMeals;
+    @FXML private TableView<Drink> tableDrinks;
+    @FXML private TableView<Order> tableOrders;
+    @FXML TableColumn<Order, String> columnDatetimeTableOrders;
+    @FXML TableColumn<Order, String> columnFillationTableOrders;
 
     @FXML
     public void initialize() {
-        columnBirthDateTableTeams.setCellValueFactory(param -> {
-            if (param.getValue() != null && param.getValue().getBirthdate() != null) {
-                return new SimpleStringProperty(DateWorker.convertToString(param.getValue().getBirthdate()));
-            } else {
-                return new SimpleStringProperty("невідомо");
-            }
-        });
-        columnFirstRaceDateTableTeams.setCellValueFactory(param -> {
-            if (param.getValue() != null && param.getValue().getFirst_race_date() != null) {
-                return new SimpleStringProperty(DateWorker.convertToString(param.getValue().getFirst_race_date()));
-            } else {
-                return new SimpleStringProperty("невідомо");
-            }
-        });
-        columnBirthDateTablePilots.setCellValueFactory(param -> {
-            if (param.getValue() != null && param.getValue().getBirthdate() != null) {
-                return new SimpleStringProperty(DateWorker.convertToString(param.getValue().getBirthdate()));
-            } else {
-                return new SimpleStringProperty("невідомо");
-            }
-        });
-        columnFirstRaceDateTablePilots.setCellValueFactory(param -> {
-            if (param.getValue() != null && param.getValue().getFirst_race_date() != null) {
-                return new SimpleStringProperty(DateWorker.convertToString(param.getValue().getFirst_race_date()));
+
+        columnDatetimeTableOrders.setCellValueFactory(param -> {
+            if (param.getValue() != null && param.getValue().getDatetime() != null) {
+                return new SimpleStringProperty(DateWorker.convertDateTimeToString(param.getValue().getDatetime()));
             } else {
                 return new SimpleStringProperty("невідомо");
             }

@@ -31,4 +31,20 @@ public class FastFood extends Owner {
     public ResultSet get(String sql, Connection connection) throws SQLException {
         return connection.createStatement().executeQuery(sql);
     }
+
+    public Integer getCreation_year() {
+        return creation_year;
+    }
+
+    public void setCreation_year(Integer creation_year) {
+        this.creation_year = creation_year;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
 }

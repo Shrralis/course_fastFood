@@ -25,4 +25,20 @@ public class Drink extends Owner {
         } catch (SQLException ignored) {}
         return this;
     }
+
+    public Integer getVolume() {
+        return volume;
+    }
+
+    public void setVolume(Integer volume) {
+        this.volume = volume;
+    }
+
+    public Double getCalorie() {
+        return calorie;
+    }
+
+    public void setCalorie(Double calorie) {
+        this.calorie = calorie;
+    }
 }

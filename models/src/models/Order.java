@@ -32,4 +32,20 @@ public class Order extends Owner {
     public ResultSet get(String sql, Connection connection) throws SQLException {
         return connection.createStatement().executeQuery(sql);
     }
+
+    public Date getDatetime() {
+        return datetime;
+    }
+
+    public void setDatetime(Date datetime) {
+        this.datetime = datetime;
+    }
+
+    public Fillation getFillation() {
+        return fillation;
+    }
+
+    public void setFillation(Fillation fillation) {
+        this.fillation = fillation;
+    }
 }

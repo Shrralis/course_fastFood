@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.control.cell.*?>
-<?import javafx.scene.layout.*?>
-<BorderPane minHeight="400.0" minWidth="800.0" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8"
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane minHeight="400.0" minWidth="800.0" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="main_form.Controller">
     <bottom>
       <HBox alignment="CENTER" spacing="16.0" BorderPane.alignment="CENTER">
@@ -23,49 +29,31 @@
    </bottom>
    <center>
        <TabPane fx:id="tabs" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
-           <Tab text="Результати">
-               <TableView fx:id="tableResults">
+           <Tab text="Заклади">
+               <TableView fx:id="tableFast_foods">
                    <columns>
-                       <TableColumn prefWidth="75.0" text="Гонка">
+                       <TableColumn prefWidth="116.0" text="Назва">
                            <cellValueFactory>
                                <PropertyValueFactory property="race" />
                            </cellValueFactory>
                        </TableColumn>
-                       <TableColumn prefWidth="75.0" text="Команда">
+                       <TableColumn prefWidth="117.0" text="Рік створення">
                            <cellValueFactory>
                                <PropertyValueFactory property="team" />
                            </cellValueFactory>
                        </TableColumn>
-                       <TableColumn prefWidth="75.0" text="Пілот">
+                       <TableColumn fx:id="columnCompanyTableFast_foods" prefWidth="198.0" text="Компанія-власник">
                            <cellValueFactory>
                                <PropertyValueFactory property="pilot" />
                            </cellValueFactory>
                        </TableColumn>
-                       <TableColumn prefWidth="75.0" text="Час гонки">
-                           <cellValueFactory>
-                               <PropertyValueFactory property="race_time" />
-                           </cellValueFactory>
-                       </TableColumn>
-                       <TableColumn prefWidth="75.0" text="Очки пілота">
-                           <cellValueFactory>
-                               <PropertyValueFactory property="pilot_points" />
-                           </cellValueFactory>
-                       </TableColumn>
-                       <TableColumn prefWidth="75.0" text="Очки команди">
-                           <cellValueFactory>
-                               <PropertyValueFactory property="team_points" />
-                           </cellValueFactory>
-                       </TableColumn>
                    </columns>
-                   <columnResizePolicy>
-                       <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                   </columnResizePolicy>
                </TableView>
            </Tab>
-           <Tab text="Гонки">
-               <TableView fx:id="tableRaces">
+           <Tab text="Компанії">
+               <TableView fx:id="tableCompanies">
                    <columns>
-                       <TableColumn prefWidth="75.0" text="Рік">
+                       <TableColumn prefWidth="75.0" text="Назва">
                            <cellValueFactory>
                                <PropertyValueFactory property="year" />
                            </cellValueFactory>
@@ -75,24 +63,19 @@
                                <PropertyValueFactory property="country" />
                           </cellValueFactory>
                       </TableColumn>
-                       <TableColumn prefWidth="75.0" text="Місто">
+                       <TableColumn prefWidth="75.0" text="Генеральний директор">
                            <cellValueFactory>
                                <PropertyValueFactory property="city" />
                            </cellValueFactory>
                        </TableColumn>
-                       <TableColumn prefWidth="75.0" text="Назва траси">
+                       <TableColumn prefWidth="75.0" text="Рік створення">
                            <cellValueFactory>
                                <PropertyValueFactory property="track_name" />
                            </cellValueFactory>
                        </TableColumn>
-                       <TableColumn prefWidth="75.0" text="Кількість кіл">
+                       <TableColumn prefWidth="75.0" text="Адреса офісу">
                            <cellValueFactory>
                                <PropertyValueFactory property="laps" />
-                           </cellValueFactory>
-                       </TableColumn>
-                       <TableColumn prefWidth="75.0" text="Довжина кола">
-                           <cellValueFactory>
-                               <PropertyValueFactory property="lap_length" />
                            </cellValueFactory>
                        </TableColumn>
                    </columns>
@@ -101,22 +84,22 @@
                    </columnResizePolicy>
                </TableView>
            </Tab>
-           <Tab text="Команди">
-               <TableView fx:id="tableTeams">
+           <Tab text="Філії">
+               <TableView fx:id="tableFillations">
                    <columns>
-                       <TableColumn prefWidth="75.0" text="Назва">
+                       <TableColumn prefWidth="75.0" text="Країна">
                            <cellValueFactory>
                                <PropertyValueFactory property="name" />
                            </cellValueFactory>
                        </TableColumn>
-                       <TableColumn fx:id="columnBirthDateTableTeams" prefWidth="75.0" text="Дата створення" />
-                       <TableColumn fx:id="columnFirstRaceDateTableTeams" prefWidth="75.0" text="Дата першої гонки" />
-                       <TableColumn prefWidth="75.0" text="Місце першої гонки">
+                       <TableColumn prefWidth="75.0" text="Місто" />
+                       <TableColumn prefWidth="75.0" text="Адреса" />
+                       <TableColumn prefWidth="75.0" text="Головна">
                            <cellValueFactory>
                                <PropertyValueFactory property="first_date_place" />
                            </cellValueFactory>
                        </TableColumn>
-                       <TableColumn prefWidth="75.0" text="Болід">
+                       <TableColumn fx:id="columnFast_foodTableFillations" prefWidth="75.0" text="Заклад">
                            <cellValueFactory>
                                <PropertyValueFactory property="car" />
                            </cellValueFactory>
@@ -127,91 +110,81 @@
                    </columnResizePolicy>
                </TableView>
            </Tab>
-           <Tab text="Пілоти">
-               <TableView fx:id="tablePilots">
+           <Tab text="Страви">
+               <TableView fx:id="tableMeals">
                    <columns>
-                       <TableColumn prefWidth="88.0" text="Ім'я">
+                       <TableColumn prefWidth="88.0" text="Назва">
                            <cellValueFactory>
                                <PropertyValueFactory property="name" />
                            </cellValueFactory>
                        </TableColumn>
-                       <TableColumn prefWidth="97.0" text="Прізвище">
+                       <TableColumn prefWidth="97.0" text="Калорійність (ккал)">
                            <cellValueFactory>
                                <PropertyValueFactory property="surname" />
                            </cellValueFactory>
                        </TableColumn>
-                       <TableColumn fx:id="columnBirthDateTablePilots" prefWidth="93.0" text="Дата народження" />
-                       <TableColumn prefWidth="104.0" text="Місце народження">
+                       <TableColumn prefWidth="93.0" text="Вага (г)" />
+                       <TableColumn prefWidth="104.0" text="Ціна (грн)">
                            <cellValueFactory>
                                <PropertyValueFactory property="birthplace" />
                            </cellValueFactory>
                        </TableColumn>
-                       <TableColumn prefWidth="92.0" text="Сімейний статус">
+                       <TableColumn prefWidth="92.0" text="Кількість (шт.)">
                            <cellValueFactory>
                                <PropertyValueFactory property="marital_status" />
                            </cellValueFactory>
                        </TableColumn>
-                       <TableColumn minWidth="4.0" prefWidth="52.0" text="Ріст (см)">
-                           <cellValueFactory>
-                               <PropertyValueFactory property="height" />
-                           </cellValueFactory>
-                       </TableColumn>
-                       <TableColumn prefWidth="54.0" text="Вага (кг)">
-                           <cellValueFactory>
-                               <PropertyValueFactory property="weight" />
-                           </cellValueFactory>
-                       </TableColumn>
-                       <TableColumn fx:id="columnFirstRaceDateTablePilots" prefWidth="129.0" text="Дата першої гонки" />
-                       <TableColumn prefWidth="135.0" text="Місце першої гонки">
-                           <cellValueFactory>
-                               <PropertyValueFactory property="first_race_place" />
-                           </cellValueFactory>
-                       </TableColumn>
                    </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
                </TableView>
            </Tab>
-           <Tab text="Спонсори">
-               <TableView fx:id="tableSponsors">
+           <Tab text="Напої">
+               <TableView fx:id="tableDrinks">
                    <columns>
                        <TableColumn prefWidth="75.0" text="Назва">
                            <cellValueFactory>
                                <PropertyValueFactory property="name" />
                            </cellValueFactory>
                        </TableColumn>
-                       <TableColumn prefWidth="75.0" text="Країна">
+                       <TableColumn prefWidth="75.0" text="Калорійність (ккал)">
                            <cellValueFactory>
                                <PropertyValueFactory property="country" />
                            </cellValueFactory>
                        </TableColumn>
+                  <TableColumn prefWidth="75.0" text="Об'єм (мл)">
+                     <cellValueFactory>
+                        <PropertyValueFactory property="country" />
+                     </cellValueFactory>
+                  </TableColumn>
+                  <TableColumn prefWidth="75.0" text="Ціна (грн)">
+                     <cellValueFactory>
+                        <PropertyValueFactory property="country" />
+                     </cellValueFactory>
+                  </TableColumn>
+                  <TableColumn prefWidth="75.0" text="Кількість (шт.)">
+                     <cellValueFactory>
+                        <PropertyValueFactory property="country" />
+                     </cellValueFactory>
+                  </TableColumn>
                    </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
                </TableView>
            </Tab>
-           <Tab text="Боліди">
-               <TableView fx:id="tableCars">
+           <Tab text="Замовлення">
+               <TableView fx:id="tableOrders">
                    <columns>
-                       <TableColumn prefWidth="137.0" text="Модель">
+                       <TableColumn fx:id="columnDatetimeTableOrders" prefWidth="189.0" text="Дата й час">
                            <cellValueFactory>
                                <PropertyValueFactory property="model" />
                            </cellValueFactory>
                        </TableColumn>
-                       <TableColumn prefWidth="118.0" text="Шасі">
+                       <TableColumn fx:id="columnFillationTableOrders" prefWidth="611.0" text="Філіал">
                            <cellValueFactory>
                                <PropertyValueFactory property="chassis" />
-                           </cellValueFactory>
-                       </TableColumn>
-                       <TableColumn prefWidth="115.0" text="Марка двигуна">
-                           <cellValueFactory>
-                               <PropertyValueFactory property="engine_brand" />
-                           </cellValueFactory>
-                       </TableColumn>
-                       <TableColumn prefWidth="142.0" text="Потужність двигуна">
-                           <cellValueFactory>
-                               <PropertyValueFactory property="engine_power" />
-                           </cellValueFactory>
-                       </TableColumn>
-                       <TableColumn prefWidth="145.0" text="Кількість циліндрів">
-                           <cellValueFactory>
-                               <PropertyValueFactory property="number_of_cylinders" />
                            </cellValueFactory>
                        </TableColumn>
                    </columns>

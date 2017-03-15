@@ -51,4 +51,28 @@ public class Personal extends Owner {
         }
         return null;
     }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public Work getWork() {
+        return work;
+    }
+
+    public void setWork(Work work) {
+        this.work = work;
+    }
+
+    public Fillation getFillation() {
+        return fillation;
+    }
+
+    public void setFillation(Fillation fillation) {
+        this.fillation = fillation;
+    }
 }

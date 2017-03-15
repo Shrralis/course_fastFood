@@ -25,4 +25,20 @@ public class Meal extends Owner {
         } catch (SQLException ignored) {}
         return this;
     }
+
+    public Double getCalorie() {
+        return calorie;
+    }
+
+    public void setCalorie(Double calorie) {
+        this.calorie = calorie;
+    }
+
+    public Double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
+    }
 }
