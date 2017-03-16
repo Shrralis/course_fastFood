@@ -2,6 +2,7 @@ package server;
 
 import models.*;
 
+import java.lang.reflect.Field;
 import java.sql.*;
 
 /**
@@ -22,9 +23,9 @@ public class DatabaseWorker {
             return openConnection();
         }
 
-        final String sDatabaseName = "formula_one";
-        final String sServerUser = "ТУТ_ВВЕДИ_ІМ'Я_КОРИСТУВАЧА_MYSQL_SERVER";
-        final String sServerPassword = "ТУТ_ВВЕДИ_ПАРОЛЬ_КОРИСТУВАЧА_MYSQL_SERVER";
+        final String sDatabaseName = "fast_food";
+        final String sServerUser = "root";
+        final String sServerPassword = "zolotorig91";
 
         try {
             if (iam.connection == null || iam.connection.isClosed()) {
@@ -93,33 +94,33 @@ public class DatabaseWorker {
                 Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                         ResultSet.CONCUR_READ_ONLY);
 
-                if (table.matches("^(companies)|(fast_foods)|(filations)|(personal)|(fillations_has_meals)" +
-                        "|(fillations_has_drinks)|(meals)|(orders_has_meals)|(drinks)|(orders_has_drinks)|(orders)$")) {
+                if (table.matches("^(companies)|(fast_foods)|(filiations)|(personal)|(filiations_has_meals)" +
+                        "|(filiations_has_drinks)|(meals)|(orders_has_meals)|(drinks)|(orders_has_drinks)|(orders)$")) {
 
-                    if (table.equalsIgnoreCase("fillations_has_meals")) {
+                    if (table.equalsIgnoreCase("filiations_has_meals")) {
                         String sql;
 
                         if (query.getMySQLCondition().matches("(\\D|\\d)+meal(\\D|\\d)+")) {
-                            sql = "SELECT f.* FROM `fillations_has_meals` fhm, `fillations` f" +
-                                    query.getMySQLCondition() + " AND fhm.`fillation` = f.`id`;";
-                            result = ServerResult.create(new List(statement.executeQuery(sql), Fillation.class, connection));
+                            sql = "SELECT f.* FROM `filiations_has_meals` fhm, `filiations` f" +
+                                    query.getMySQLCondition() + " AND fhm.`filiation` = f.`id`;";
+                            result = ServerResult.create(new List(statement.executeQuery(sql), Filiation.class, connection));
                         } else {
-                            sql = "SELECT m.* FROM `fillations_has_meals` fhm, `meals` m" +
+                            sql = "SELECT m.* FROM `filiations_has_meals` fhm, `meals` m" +
                                     query.getMySQLCondition() + " AND fhm.`meal` = m.`id`;";
                             result = ServerResult.create(new List(statement.executeQuery(sql), Meal.class));
                         }
                         return result;
                     }
 
-                    if (table.equalsIgnoreCase("fillations_has_drinks")) {
+                    if (table.equalsIgnoreCase("filiations_has_drinks")) {
                         String sql;
 
                         if (query.getMySQLCondition().matches("(\\D|\\d)+drink(\\D|\\d)+")) {
-                            sql = "SELECT f.* FROM `fillations_has_drinks` fhd, `fillations` f" +
-                                    query.getMySQLCondition() + " AND fhd.`fillation` = f.`id`;";
-                            result = ServerResult.create(new List(statement.executeQuery(sql), Fillation.class, connection));
+                            sql = "SELECT f.* FROM `filiations_has_drinks` fhd, `filiations` f" +
+                                    query.getMySQLCondition() + " AND fhd.`filiation` = f.`id`;";
+                            result = ServerResult.create(new List(statement.executeQuery(sql), Filiation.class, connection));
                         } else {
-                            sql = "SELECT d.* FROM `fillations_has_drinks` fhd, `drinks` d" +
+                            sql = "SELECT d.* FROM `filiations_has_drinks` fhd, `drinks` d" +
                                     query.getMySQLCondition() + " AND fhm.`drink` = d.`id`;";
                             result = ServerResult.create(new List(statement.executeQuery(sql), Drink.class));
                         }
@@ -162,17 +163,17 @@ public class DatabaseWorker {
                     if (table.equalsIgnoreCase("companies")) {
                         result = ServerResult.create(new List(resultSet, Company.class, connection));
                     } else if (table.equalsIgnoreCase("fast_foods")) {
-                        result = ServerResult.create(new List(resultSet, FastFood.class, connection));
+                        result = ServerResult.create(new List(resultSet, Fast_Food.class, connection));
                     } else if (table.equalsIgnoreCase("personal")) {
                         result = ServerResult.create(new List(resultSet, Personal.class));
-                    } else if (table.equalsIgnoreCase("fillations")) {
-                        result = ServerResult.create(new List(resultSet, Fillation.class));
+                    } else if (table.equalsIgnoreCase("filiations")) {
+                        result = ServerResult.create(new List(resultSet, Filiation.class, connection));
                     } else if (table.equalsIgnoreCase("meals")) {
                         result = ServerResult.create(new List(resultSet, Meal.class));
                     } else if (table.equalsIgnoreCase("drinks")) {
                         result = ServerResult.create(new List(resultSet, Drink.class));
                     } else if (table.equalsIgnoreCase("orders")) {
-                        result = ServerResult.create(new List(resultSet, Order.class));
+                        result = ServerResult.create(new List(resultSet, Order.class, connection));
                     }
                 } else {
                     System.out.println("Unknown table (" + table + ") for get()");
@@ -181,6 +182,19 @@ public class DatabaseWorker {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+//        for (int i = 0; i < result.getObjects().size(); i++) {
+//            Owner res = result.getObjects().get(i);
+//
+//            for (Field field : res.getClass().getDeclaredFields()) {
+//                try {
+//                    System.out.println(field.getName() + " = " + field.get(res));
+//                } catch (IllegalAccessException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+
         return result;
     }
 
@@ -194,8 +208,8 @@ public class DatabaseWorker {
                 Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                         ResultSet.CONCUR_READ_ONLY);
 
-                if (table.matches("^(companies)|(fast_foods)|(filations)|(personal)|(fillations_has_meals)" +
-                        "|(fillations_has_drinks)|(meals)|(orders_has_meals)|(drinks)|(orders_has_drinks)|(orders)$")) {
+                if (table.matches("^(companies)|(fast_foods)|(filiations)|(personal)|(filiations_has_meals)" +
+                        "|(filiations_has_drinks)|(meals)|(orders_has_meals)|(drinks)|(orders_has_drinks)|(orders)$")) {
                     System.out.println(query.getInsertMysqlQuery());
 
                     int iResult = statement.executeUpdate(query.getInsertMysqlQuery(), Statement.RETURN_GENERATED_KEYS);
@@ -208,7 +222,7 @@ public class DatabaseWorker {
                             id = rs.getInt(1);
                         }
 
-                        if (table.matches("^((fillation)|(order))s_has_((meal)|(drink))s$")) {
+                        if (table.matches("^((filiation)|(order))s_has_((meal)|(drink))s$")) {
                             result = ServerResult.create(0, "successfully added");
                         } else {
                             result = ServerResult.create(
@@ -235,10 +249,10 @@ public class DatabaseWorker {
                 Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                         ResultSet.CONCUR_READ_ONLY);
 
-                if (table.matches("^(companies)|(fast_foods)|(filations)|(personal)|(fillations_has_meals)" +
-                        "|(fillations_has_drinks)|(meals)|(orders_has_meals)|(drinks)|(orders_has_drinks)|(orders)$")) {
+                if (table.matches("^(companies)|(fast_foods)|(filiations)|(personal)|(filiations_has_meals)" +
+                        "|(filiations_has_drinks)|(meals)|(orders_has_meals)|(drinks)|(orders_has_drinks)|(orders)$")) {
                     int iResult = statement.executeUpdate("DELETE FROM `" + table + "` WHERE `id` = "
-                            + query.getObjectToProcess().getId() + ";");
+                            + ((Owner) query.getObjectToProcess()).getId() + ";");
 
                     if (iResult >= 0) {
                         result = ServerResult.create(0, "deleted");
@@ -261,12 +275,12 @@ public class DatabaseWorker {
                 Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                         ResultSet.CONCUR_READ_ONLY);
 
-                if (table.matches("^(companies)|(fast_foods)|(filations)|(personal)|(fillations_has_meals)" +
-                        "|(fillations_has_drinks)|(meals)|(orders_has_meals)|(drinks)|(orders_has_drinks)|(orders)$")) {
+                if (table.matches("^(companies)|(fast_foods)|(filiations)|(personal)|(filiations_has_meals)" +
+                        "|(filiations_has_drinks)|(meals)|(orders_has_meals)|(drinks)|(orders_has_drinks)|(orders)$")) {
                     int iResult = statement.executeUpdate(query.getUpdateMysqlQuery(), Statement.RETURN_GENERATED_KEYS);
 
                     if (iResult >= 0) {
-                        int id = query.getObjectToProcess().getId();
+                        int id = ((Owner) query.getObjectToProcess()).getId();
 
                         result = ServerResult.create(
                                 new List(statement.executeQuery("SELECT * FROM `" + table + "` WHERE `id` = " + id + ";"),

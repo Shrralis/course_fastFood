@@ -219,7 +219,7 @@ public class ParseUtils {
 
         if (value instanceof Number) {
             result += (Number) value;
-        } else if (fieldType.equals(boolean.class)) {
+        } else if (fieldType.equals(Boolean.class) || fieldType.equals(boolean.class)) {
             result += value;
         } else if (fieldType.equals(Date.class)) {
             result += "'" + DateWorker.convertDateToString((Date) value) + "'";

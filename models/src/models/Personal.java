@@ -18,7 +18,7 @@ public class Personal extends Owner {
 
     public String surname = null;
     public Work work = null;
-    public Fillation fillation = null;
+    public Filiation filiation = null;
 
     public Personal() {}
     @SuppressWarnings("unused")
@@ -33,8 +33,8 @@ public class Personal extends Owner {
         try {
             surname = from.getString("surname");
             work = parseWork(from.getString("work"));
-            fillation = ParseUtils.parseViaReflection(new Fillation(), get("SELECT * FROM `fillations` WHERE `id = " +
-                    from.getInt("fillation") + ";", connection));
+            filiation = new List<>(get("SELECT * FROM `filiations` WHERE `id = " +
+                    from.getInt("filiation") + ";", connection), Filiation.class, connection).get(0);
         } catch (SQLException ignored) {}
         return this;
     }
@@ -68,11 +68,11 @@ public class Personal extends Owner {
         this.work = work;
     }
 
-    public Fillation getFillation() {
-        return fillation;
+    public Filiation getFiliation() {
+        return filiation;
     }
 
-    public void setFillation(Fillation fillation) {
-        this.fillation = fillation;
+    public void setFiliation(Filiation filiation) {
+        this.filiation = filiation;
     }
 }

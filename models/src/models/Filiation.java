@@ -7,20 +7,20 @@ import java.sql.SQLException;
 /**
  * Created by shrralis on 3/15/17.
  */
-public class Fillation extends Owner {
+public class Filiation extends Owner {
     public String country = null;
     public String city = null;
     public String address = null;
     public Boolean general = null;
-    public FastFood fast_food = null;
+    public Fast_Food fast_food = null;
 
-    public Fillation() {}
+    public Filiation() {}
     @SuppressWarnings("unused")
-    public Fillation(ResultSet from) {
+    public Filiation(ResultSet from) {
         parse(from);
     }
     @Override
-    public Fillation parse(ResultSet from, Connection connection) {
+    public Filiation parse(ResultSet from, Connection connection) {
         super.parse(from);
 
         try {
@@ -28,10 +28,14 @@ public class Fillation extends Owner {
             city = from.getString("city");
             address = from.getString("address");
             general = from.getBoolean("general");
-            fast_food = ParseUtils.parseViaReflection(new FastFood(), get("SELECT * FROM `fast_foods` WHERE `id = " +
-                    from.getInt("fast_food") + ";", connection));
+            fast_food = new List<>(get("SELECT * FROM `fast_foods` WHERE `id` = " +
+                    from.getInt("fast_food") + ";", connection), Fast_Food.class, connection).get(0);
         } catch (SQLException ignored) {}
         return this;
+    }
+    @Override
+    public String toString() {
+        return fast_food.toString() + " - " + country + ", " + city + " " + address;
     }
 
     public ResultSet get(String sql, Connection connection) throws SQLException {
@@ -70,11 +74,11 @@ public class Fillation extends Owner {
         this.general = general;
     }
 
-    public FastFood getFast_food() {
+    public Fast_Food getFast_food() {
         return fast_food;
     }
 
-    public void setFast_food(FastFood fast_food) {
+    public void setFast_food(Fast_Food fast_food) {
         this.fast_food = fast_food;
     }
 }

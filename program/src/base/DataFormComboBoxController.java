@@ -62,7 +62,14 @@ public abstract class DataFormComboBoxController extends DataFormController impl
     }
 
     private <T extends Owner> void setSomething(Class<T> clazz) {
-        String tableName = clazz.getSimpleName().toLowerCase() + "s";
+        String tableName = clazz.getSimpleName().toLowerCase();
+
+        if (tableName.matches("^(\\D|\\d)+y$")) {
+            tableName = tableName.substring(0, tableName.lastIndexOf('y')) + "ies";
+        } else {
+            tableName += "s";
+        }
+
         ServerQuery query = ServerQuery.create(tableName, "get", null, null);
         ObservableList<T> list = FXCollections.observableArrayList();
 

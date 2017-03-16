@@ -1,8 +1,6 @@
 package main_form;
 
-import base.AlertsBuilder;
-import base.DataFormControllerInterface;
-import base.OnMouseClickListener;
+import base.*;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -21,43 +19,93 @@ import java.util.HashMap;
 @SuppressWarnings("unchecked")
 public class Controller {
     @FXML private TabPane tabs;
-    @FXML private TableView<FastFood> tableFast_foods;
-    @FXML TableColumn<FastFood, String> columnCompanyTableFast_foods;
-    @FXML private TableView<Company> tableComanies;
-    @FXML private TableView<Fillation> tableFillations;
-    @FXML TableColumn<Fillation, String> columnFast_foodTableFillations;
+    @FXML private TableView<Fast_Food> tableFast_foods;
+    @FXML TableColumn<Fast_Food, String> columnCompanyTableFast_foods;
+    @FXML private TableView<Company> tableCompanies;
+    @FXML private TableView<Filiation> tableFiliations;
+    @FXML TableColumn<Filiation, String> columnGeneralTableFiliations;
+    @FXML TableColumn<Filiation, String> columnFast_foodTableFiliations;
     @FXML private TableView<Meal> tableMeals;
     @FXML private TableView<Drink> tableDrinks;
     @FXML private TableView<Order> tableOrders;
-    @FXML TableColumn<Order, String> columnDatetimeTableOrders;
-    @FXML TableColumn<Order, String> columnFillationTableOrders;
+    @FXML TableColumn<Order, String> columnDateTableOrders;
+    @FXML TableColumn<Order, String> columnTimeTableOrders;
+    @FXML TableColumn<Order, String> columnFiliationTableOrders;
 
     @FXML
     public void initialize() {
-
-        columnDatetimeTableOrders.setCellValueFactory(param -> {
-            if (param.getValue() != null && param.getValue().getDatetime() != null) {
-                return new SimpleStringProperty(DateWorker.convertDateTimeToString(param.getValue().getDatetime()));
+        columnCompanyTableFast_foods.setCellValueFactory(param -> {
+            if (param.getValue() != null && param.getValue().getCompany().getName() != null) {
+                return new SimpleStringProperty(param.getValue().getCompany().toString());
             } else {
                 return new SimpleStringProperty("невідомо");
             }
         });
-        tableTeams.setRowFactory(param -> {
-            final TableRow<Team> row = new TableRow<>();
+        columnGeneralTableFiliations.setCellValueFactory(param -> {
+            if (param.getValue() != null && param.getValue().getGeneral() != null) {
+                return new SimpleStringProperty(param.getValue().getGeneral() ? "є головною" : "не головна");
+            } else {
+                return new SimpleStringProperty("невідомо");
+            }
+        });
+        columnFast_foodTableFiliations.setCellValueFactory(param -> {
+            if (param.getValue() != null && param.getValue().getFast_food() != null) {
+                return new SimpleStringProperty(param.getValue().getFast_food().toString());
+            } else {
+                return new SimpleStringProperty("невідомо");
+            }
+        });
+        columnDateTableOrders.setCellValueFactory(param -> {
+            if (param.getValue() != null && param.getValue().getDate() != null) {
+                return new SimpleStringProperty(DateWorker.convertDateToString(param.getValue().getDate()));
+            } else {
+                return new SimpleStringProperty("невідомо");
+            }
+        });
+        columnFiliationTableOrders.setCellValueFactory(param -> {
+            if (param.getValue() != null && param.getValue().getFiliation() != null) {
+                return new SimpleStringProperty(param.getValue().getFiliation().toString());
+            } else {
+                return new SimpleStringProperty("невідомо");
+            }
+        });
+        tableFiliations.setRowFactory(param -> {
+            final TableRow<Filiation> row = new TableRow<>();
             final ContextMenu contextMenu = new ContextMenu();
-            final MenuItem addSponsor = new MenuItem("Додати спонсора");
-            final MenuItem findSponsors = new MenuItem("Спонсори команди");
+            final MenuItem addMeal = new MenuItem("Додати страву");
+            final MenuItem addDrink = new MenuItem("Додати напій");
+            final MenuItem findMeals = new MenuItem("Страви, які тут подаються");
+            final MenuItem findDrinks = new MenuItem("Напої, які тут подаються");
 
-            addSponsor.setOnAction(event -> openAddSponsorForm());
-            findSponsors.setOnAction(event -> {
+            addMeal.setOnAction(event -> openAddMealForm(tableFiliations.getSelectionModel().getSelectedItem()));
+            addDrink.setOnAction(event -> openAddDrinkForm(tableFiliations.getSelectionModel().getSelectedItem()));
+            findMeals.setOnAction(event -> {
                 HashMap<String, Object> params = new HashMap<>();
 
-                params.put("team", tableTeams.getSelectionModel().getSelectedItem().getId());
-                tableSponsors.setItems(
+                params.put("filiation", tableFiliations.getSelectionModel().getSelectedItem().getId());
+                tableMeals.setItems(
                         FXCollections.observableArrayList(
                                 DatabaseWorker.processQuery(
                                         ServerQuery.create(
-                                                "teams_has_sponsors",
+                                                "filiations_has_meals",
+                                                "get",
+                                                null,
+                                                params
+                                        )
+                                ).getObjects()
+                        )
+                );
+                tabs.getSelectionModel().select(3);
+            });
+            findDrinks.setOnAction(event -> {
+                HashMap<String, Object> params = new HashMap<>();
+
+                params.put("filiation", tableDrinks.getSelectionModel().getSelectedItem().getId());
+                tableDrinks.setItems(
+                        FXCollections.observableArrayList(
+                                DatabaseWorker.processQuery(
+                                        ServerQuery.create(
+                                                "filiations_has_drinks",
                                                 "get",
                                                 null,
                                                 params
@@ -67,7 +115,7 @@ public class Controller {
                 );
                 tabs.getSelectionModel().select(4);
             });
-            contextMenu.getItems().addAll(addSponsor, findSponsors);
+            contextMenu.getItems().addAll(addMeal, addDrink, findMeals, findDrinks);
             row.contextMenuProperty().bind(
                     Bindings.when(row.emptyProperty())
                             .then((ContextMenu) null)
@@ -75,22 +123,25 @@ public class Controller {
             );
             return row;
         });
-        tableSponsors.setRowFactory(param -> {
-            final TableRow<Sponsor> row = new TableRow<>();
+        tableMeals.setRowFactory(param -> {
+            final TableRow<Meal> row = new TableRow<>();
             final ContextMenu contextMenu = new ContextMenu();
-            final MenuItem addToTeam = new MenuItem("Додати до команди");
-            final MenuItem findTeams = new MenuItem("Спонсоровані команди");
+            final MenuItem addToFiliation = new MenuItem("Додати до філії");
+            final MenuItem addToOrder = new MenuItem("Додати до замовлення");
+            final MenuItem findFiliations = new MenuItem("Філії, які подають цю страву");
+            final MenuItem findOrders = new MenuItem("Замовлення, в яких є ця страва");
 
-            addToTeam.setOnAction(event -> openAddToTeamForm());
-            findTeams.setOnAction(event -> {
+            addToFiliation.setOnAction(event -> openAddToFiliationForm(tableMeals.getSelectionModel().getSelectedItem()));
+            addToOrder.setOnAction(event -> openAddToOrderForm(tableMeals.getSelectionModel().getSelectedItem()));
+            findFiliations.setOnAction(event -> {
                 HashMap<String, Object> params = new HashMap<>();
 
-                params.put("sponsor", tableSponsors.getSelectionModel().getSelectedItem().getId());
-                tableTeams.setItems(
+                params.put("meal", tableMeals.getSelectionModel().getSelectedItem().getId());
+                tableFiliations.setItems(
                         FXCollections.observableArrayList(
                                 DatabaseWorker.processQuery(
                                         ServerQuery.create(
-                                                "teams_has_sponsors",
+                                                "filiations_has_meals",
                                                 "get",
                                                 null,
                                                 params
@@ -100,7 +151,133 @@ public class Controller {
                 );
                 tabs.getSelectionModel().select(2);
             });
-            contextMenu.getItems().addAll(addToTeam, findTeams);
+            findOrders.setOnAction(event -> {
+                HashMap<String, Object> params = new HashMap<>();
+
+                params.put("meal", tableMeals.getSelectionModel().getSelectedItem().getId());
+                tableOrders.setItems(
+                        FXCollections.observableArrayList(
+                                DatabaseWorker.processQuery(
+                                        ServerQuery.create(
+                                                "orders_has_meals",
+                                                "get",
+                                                null,
+                                                params
+                                        )
+                                ).getObjects()
+                        )
+                );
+                tabs.getSelectionModel().select(4);
+            });
+            contextMenu.getItems().addAll(addToFiliation, addToOrder, findFiliations, findOrders);
+            row.contextMenuProperty().bind(
+                    Bindings.when(row.emptyProperty())
+                            .then((ContextMenu) null)
+                            .otherwise(contextMenu)
+            );
+            return row;
+        });
+        tableDrinks.setRowFactory(param -> {
+            final TableRow<Drink> row = new TableRow<>();
+            final ContextMenu contextMenu = new ContextMenu();
+            final MenuItem addToFiliation = new MenuItem("Додати до філії");
+            final MenuItem addToOrder = new MenuItem("Додати до замовлення");
+            final MenuItem findFiliations = new MenuItem("Філії, які подають цей напій");
+            final MenuItem findOrders = new MenuItem("Замовлення, в яких є цей напій");
+
+            addToFiliation.setOnAction(event -> openAddToFiliationForm(tableDrinks.getSelectionModel().getSelectedItem()));
+            addToOrder.setOnAction(event -> openAddToOrderForm(tableDrinks.getSelectionModel().getSelectedItem()));
+            findFiliations.setOnAction(event -> {
+                HashMap<String, Object> params = new HashMap<>();
+
+                params.put("drink", tableDrinks.getSelectionModel().getSelectedItem().getId());
+                tableFiliations.setItems(
+                        FXCollections.observableArrayList(
+                                DatabaseWorker.processQuery(
+                                        ServerQuery.create(
+                                                "filiations_has_drinks",
+                                                "get",
+                                                null,
+                                                params
+                                        )
+                                ).getObjects()
+                        )
+                );
+                tabs.getSelectionModel().select(4);
+            });
+            findOrders.setOnAction(event -> {
+                HashMap<String, Object> params = new HashMap<>();
+
+                params.put("drink", tableDrinks.getSelectionModel().getSelectedItem().getId());
+                tableOrders.setItems(
+                        FXCollections.observableArrayList(
+                                DatabaseWorker.processQuery(
+                                        ServerQuery.create(
+                                                "orders_has_drinks",
+                                                "get",
+                                                null,
+                                                params
+                                        )
+                                ).getObjects()
+                        )
+                );
+                tabs.getSelectionModel().select(4);
+            });
+            contextMenu.getItems().addAll(addToFiliation, addToOrder, findFiliations, findOrders);
+            row.contextMenuProperty().bind(
+                    Bindings.when(row.emptyProperty())
+                            .then((ContextMenu) null)
+                            .otherwise(contextMenu)
+            );
+            return row;
+        });
+        tableOrders.setRowFactory(param -> {
+            final TableRow<Order> row = new TableRow<>();
+            final ContextMenu contextMenu = new ContextMenu();
+            final MenuItem addMeal = new MenuItem("Додати страву");
+            final MenuItem addDrink = new MenuItem("Додати напій");
+            final MenuItem findMeals = new MenuItem("Страви, які є в замовленні");
+            final MenuItem findDrinks = new MenuItem("Напої, які є в замовленні");
+
+            addMeal.setOnAction(event -> openAddMealForm(tableOrders.getSelectionModel().getSelectedItem()));
+            addDrink.setOnAction(event -> openAddDrinkForm(tableOrders.getSelectionModel().getSelectedItem()));
+            findMeals.setOnAction(event -> {
+                HashMap<String, Object> params = new HashMap<>();
+
+                params.put("order", tableOrders.getSelectionModel().getSelectedItem().getId());
+                tableMeals.setItems(
+                        FXCollections.observableArrayList(
+                                DatabaseWorker.processQuery(
+                                        ServerQuery.create(
+                                                "orders_has_meals",
+                                                "get",
+                                                null,
+                                                params
+                                        )
+                                ).getObjects()
+                        )
+                );
+                tabs.getSelectionModel().select(3);
+            });
+            findDrinks.setOnAction(event -> {
+                HashMap<String, Object> params = new HashMap<>();
+
+                params.put("order", tableOrders.getSelectionModel().getSelectedItem().getId());
+                tableDrinks.setItems(
+                        FXCollections.observableArrayList(
+                                DatabaseWorker.processQuery(
+                                        ServerQuery.create(
+                                                "orders_has_drinks",
+                                                "get",
+                                                null,
+                                                params
+                                        )
+                                ).getObjects()
+                        )
+                );
+                tabs.getSelectionModel().select(4);
+            });
+            contextMenu.getItems().addAll(addMeal, addDrink, findMeals, findDrinks);
             row.contextMenuProperty().bind(
                     Bindings.when(row.emptyProperty())
                             .then((ContextMenu) null)
@@ -121,18 +298,18 @@ public class Controller {
     private void onButtonDeleteClick() {
         String sSelectedTab = tabs.getSelectionModel().getSelectedItem().getText();
 
-        if (sSelectedTab.equalsIgnoreCase("результати")) {
-            deleteRecord(tableResults);
-        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("гонки")) {
-            deleteRecord(tableRaces);
-        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("команди")) {
-            deleteRecord(tableTeams);
-        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("пілоти")) {
-            deleteRecord(tablePilots);
-        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("спонсори")) {
-            deleteRecord(tableSponsors);
+        if (sSelectedTab.equalsIgnoreCase("заклади")) {
+            deleteRecord(tableFast_foods);
+        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("компанії")) {
+            deleteRecord(tableCompanies);
+        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("філії")) {
+            deleteRecord(tableFiliations);
+        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("страви")) {
+            deleteRecord(tableMeals);
+        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("напої")) {
+            deleteRecord(tableDrinks);
         } else {
-            deleteRecord(tableCars);
+            deleteRecord(tableOrders);
         }
     }
     @FXML
@@ -143,18 +320,18 @@ public class Controller {
     private void onButtonRefreshClick() {
         String sSelectedTab = tabs.getSelectionModel().getSelectedItem().getText();
 
-        if (sSelectedTab.equalsIgnoreCase("результати")) {
-            loadDataToTableFromDatabase(tableResults, null);
-        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("гонки")) {
-            loadDataToTableFromDatabase(tableRaces, null);
-        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("команди")) {
-            loadDataToTableFromDatabase(tableTeams, null);
-        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("пілоти")) {
-            loadDataToTableFromDatabase(tablePilots, null);
-        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("спонсори")) {
-            loadDataToTableFromDatabase(tableSponsors, null);
+        if (sSelectedTab.equalsIgnoreCase("заклади")) {
+            loadDataToTableFromDatabase(tableFast_foods, null);
+        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("компанії")) {
+            loadDataToTableFromDatabase(tableCompanies, null);
+        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("філії")) {
+            loadDataToTableFromDatabase(tableFiliations, null);
+        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("страви")) {
+            loadDataToTableFromDatabase(tableMeals, null);
+        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("напої")) {
+            loadDataToTableFromDatabase(tableDrinks, null);
         } else {
-            loadDataToTableFromDatabase(tableCars, null);
+            loadDataToTableFromDatabase(tableOrders, null);
         }
     }
 
@@ -163,24 +340,24 @@ public class Controller {
         TableView tableView;
         FXMLLoader loader;
 
-        if (sSelectedTab.equalsIgnoreCase("результати")) {
-            tableView = tableResults;
-            loader = new FXMLLoader(getClass().getResource("/results_data_form/data.fxml"));
-        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("гонки")) {
-            tableView = tableRaces;
-            loader = new FXMLLoader(getClass().getResource("/races_data_form/data.fxml"));
-        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("команди")) {
-            tableView = tableTeams;
-            loader = new FXMLLoader(getClass().getResource("/teams_data_form/data.fxml"));
-        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("пілоти")) {
-            tableView = tablePilots;
-            loader = new FXMLLoader(getClass().getResource("/pilots_data_form/data.fxml"));
-        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("спонсори")) {
-            tableView = tableSponsors;
-            loader = new FXMLLoader(getClass().getResource("/sponsors_data_form/data.fxml"));
+        if (sSelectedTab.equalsIgnoreCase("заклади")) {
+            tableView = tableFast_foods;
+            loader = new FXMLLoader(getClass().getResource("/fast_foods_data_form/data.fxml"));
+        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("компанії")) {
+            tableView = tableCompanies;
+            loader = new FXMLLoader(getClass().getResource("/companies_data_form/data.fxml"));
+        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("філії")) {
+            tableView = tableFiliations;
+            loader = new FXMLLoader(getClass().getResource("/filiations_data_form/data.fxml"));
+        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("страви")) {
+            tableView = tableMeals;
+            loader = new FXMLLoader(getClass().getResource("/meals_data_form/data.fxml"));
+        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("напої")) {
+            tableView = tableDrinks;
+            loader = new FXMLLoader(getClass().getResource("/drinks_data_form/data.fxml"));
         } else {
-            tableView = tableCars;
-            loader = new FXMLLoader(getClass().getResource("/cars_data_form/data.fxml"));
+            tableView = tableOrders;
+            loader = new FXMLLoader(getClass().getResource("/orders_data_form/data.fxml"));
         }
         loader.load();
 
@@ -212,49 +389,41 @@ public class Controller {
         String sSelectedTab = tabs.getSelectionModel().getSelectedItem().getText();
         TableView tableView;
 
-        if (sSelectedTab.equalsIgnoreCase("результати")) {
-            tableView = tableResults;
-        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("гонки")) {
-            tableView = tableRaces;
-        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("команди")) {
-            tableView = tableTeams;
-        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("пілоти")) {
-            tableView = tablePilots;
-        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("спонсори")) {
-            tableView = tableSponsors;
+        if (sSelectedTab.equalsIgnoreCase("заклади")) {
+            tableView = tableFast_foods;
+        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("компанії")) {
+            tableView = tableCompanies;
+        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("філії")) {
+            tableView = tableFiliations;
+        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("страви")) {
+            tableView = tableMeals;
+        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("напої")) {
+            tableView = tableDrinks;
         } else {
-            tableView = tableCars;
+            tableView = tableOrders;
         }
 
         switch (type) {
             case Add:
-                okListener = () -> {
-                    controller.addObjectToTableView(tableView);
-                };
+                okListener = () -> controller.addObjectToTableView(tableView);
                 break;
             case Edit:
-                okListener = () -> {
-                    controller.editObjectInTableView(tableView);
-                };
+                okListener = () -> controller.editObjectInTableView(tableView);
                 break;
             case Search:
-                okListener = () -> {
-                    System.out.println("doing search");
-                    controller.search(this, tableView);
-                    System.out.println("search finished");
-                };
+                okListener = () -> controller.search(this, tableView);
                 break;
         }
         controller.setOnMouseOkClickListener(okListener);
     }
 
     void setupAllTables() {
-        loadDataToTableFromDatabase(tableResults, null);
-        loadDataToTableFromDatabase(tableRaces, null);
-        loadDataToTableFromDatabase(tableTeams, null);
-        loadDataToTableFromDatabase(tablePilots, null);
-        loadDataToTableFromDatabase(tableSponsors, null);
-        loadDataToTableFromDatabase(tableCars, null);
+        loadDataToTableFromDatabase(tableFast_foods, null);
+        loadDataToTableFromDatabase(tableCompanies, null);
+        loadDataToTableFromDatabase(tableFiliations, null);
+        loadDataToTableFromDatabase(tableMeals, null);
+        loadDataToTableFromDatabase(tableDrinks, null);
+        loadDataToTableFromDatabase(tableOrders, null);
     }
     @SuppressWarnings("unchecked")
     public void loadDataToTableFromDatabase(TableView tableView, HashMap<String, Object> params) {
@@ -311,33 +480,89 @@ public class Controller {
         }
     }
 
-    private void openAddSponsorForm() {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/team_to_sponsor_data_form/data.fxml"));
+    private <T extends Owner, E extends DataFormComboBoxControllerAdditional> void openAddMealForm(T filiationOrOrder) {
+        FXMLLoader loader;
+
+        if (filiationOrOrder instanceof Filiation) {
+            loader = new FXMLLoader(getClass().getResource("/meal_to_filiation_data_form/data.fxml"));
+        } else {
+            loader = new FXMLLoader(getClass().getResource("/meal_to_order_data_form/data.fxml"));
+        }
 
         try {
             loader.load();
         } catch (IOException ignored) {}
 
-        team_to_sponsor_data_form.Controller controller = loader.getController();
+        E controller = loader.getController();
         Stage dataFormStage = new Stage();
 
-        controller.setTeam(tableTeams.getSelectionModel().getSelectedItem());
+        controller.setObjectToSearch(filiationOrOrder);
         dataFormStage.setScene(new Scene(loader.getRoot()));
         controller.setPrimaryStage(dataFormStage);
         dataFormStage.showAndWait();
     }
 
-    private void openAddToTeamForm() {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/sponsor_to_team_data_form/data.fxml"));
+    private <T extends Owner, E extends DataFormComboBoxControllerAdditional> void openAddDrinkForm(T filiationOrOrder) {
+        FXMLLoader loader;
+
+        if (filiationOrOrder instanceof Filiation) {
+            loader = new FXMLLoader(getClass().getResource("/drink_to_filiation_data_form/data.fxml"));
+        } else {
+            loader = new FXMLLoader(getClass().getResource("/drink_to_order_data_form/data.fxml"));
+        }
 
         try {
             loader.load();
         } catch (IOException ignored) {}
 
-        sponsor_to_team_data_form.Controller controller = loader.getController();
+        E controller = loader.getController();
         Stage dataFormStage = new Stage();
 
-        controller.setSponsor(tableSponsors.getSelectionModel().getSelectedItem());
+        controller.setObjectToSearch(filiationOrOrder);
+        dataFormStage.setScene(new Scene(loader.getRoot()));
+        controller.setPrimaryStage(dataFormStage);
+        dataFormStage.showAndWait();
+    }
+
+    private <T extends Owner, E extends DataFormComboBoxControllerAdditional> void openAddToFiliationForm(T mealOrDrink) {
+        FXMLLoader loader;
+
+        if (mealOrDrink instanceof Meal) {
+            loader = new FXMLLoader(getClass().getResource("/filiation_to_meal_data_form/data.fxml"));
+        } else {
+            loader = new FXMLLoader(getClass().getResource("/filiation_to_drink_data_form/data.fxml"));
+        }
+
+        try {
+            loader.load();
+        } catch (IOException ignored) {}
+
+        E controller = loader.getController();
+        Stage dataFormStage = new Stage();
+
+        controller.setObjectToSearch(mealOrDrink);
+        dataFormStage.setScene(new Scene(loader.getRoot()));
+        controller.setPrimaryStage(dataFormStage);
+        dataFormStage.showAndWait();
+    }
+
+    private <T extends Owner, E extends DataFormComboBoxControllerAdditional> void openAddToOrderForm(T mealOrDrink) {
+        FXMLLoader loader;
+
+        if (mealOrDrink instanceof Meal) {
+            loader = new FXMLLoader(getClass().getResource("/order_to_meal_data_form/data.fxml"));
+        } else {
+            loader = new FXMLLoader(getClass().getResource("/order_to_drink_data_form/data.fxml"));
+        }
+
+        try {
+            loader.load();
+        } catch (IOException ignored) {}
+
+        E controller = loader.getController();
+        Stage dataFormStage = new Stage();
+
+        controller.setObjectToSearch(mealOrDrink);
         dataFormStage.setScene(new Scene(loader.getRoot()));
         controller.setPrimaryStage(dataFormStage);
         dataFormStage.showAndWait();

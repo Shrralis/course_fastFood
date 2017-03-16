@@ -39,7 +39,7 @@ public class Main extends Application {
     private void drawForm(Stage primaryStage) {
         Parent root = loader.getRoot();
 
-        primaryStage.setTitle("Формула-1");
+        primaryStage.setTitle("Заклади швидкого харчування");
         primaryStage.setScene(new Scene(root));
         primaryStage.setMinWidth(root.minWidth(-1));
         primaryStage.setMinHeight(root.minHeight(-1) + 50);

@@ -7,25 +7,29 @@ import java.sql.SQLException;
 /**
  * Created by shrralis on 3/15/17.
  */
-public class FastFood extends Owner {
+public class Fast_Food extends Owner {
     public Integer creation_year = null;
     public Company company = null;
 
-    public FastFood() {}
+    public Fast_Food() {}
     @SuppressWarnings("unused")
-    public FastFood(ResultSet from) {
+    public Fast_Food(ResultSet from) {
         parse(from);
     }
     @Override
-    public FastFood parse(ResultSet from, Connection connection) {
+    public Fast_Food parse(ResultSet from, Connection connection) {
         super.parse(from);
 
         try {
             creation_year = from.getInt("creation_year");
-            company = ParseUtils.parseViaReflection(new Company(), get("SELECT * FROM `companies` WHERE `id` = " +
-                    from.getInt("company") + ";", connection));
+            company = new List<>(get("SELECT * FROM `companies` WHERE `id` = " +
+                    from.getInt("company") + ";", connection), Company.class, connection).get(0);
         } catch (SQLException ignored) {}
         return this;
+    }
+    @Override
+    public String toString() {
+        return name + " (" + company.toString() + ")";
     }
 
     public ResultSet get(String sql, Connection connection) throws SQLException {

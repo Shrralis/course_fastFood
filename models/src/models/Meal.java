@@ -9,6 +9,8 @@ import java.sql.SQLException;
 public class Meal extends Owner {
     public Double calorie = null;
     public Double weight = null;
+    public Integer amount = null;
+    public Double price = null;
 
     public Meal() {}
     @SuppressWarnings("unused")
@@ -22,6 +24,12 @@ public class Meal extends Owner {
         try {
             calorie = from.getDouble("calorie");
             weight = from.getDouble("weight");
+
+            try {
+                amount = from.getInt("amount");
+            } catch (SQLException ignored) {}
+
+            price = from.getDouble("price");
         } catch (SQLException ignored) {}
         return this;
     }
@@ -40,5 +48,21 @@ public class Meal extends Owner {
 
     public void setWeight(Double weight) {
         this.weight = weight;
+    }
+
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }

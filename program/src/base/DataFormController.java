@@ -8,10 +8,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import main_form.Controller;
-import models.DateWorker;
-import models.Owner;
-import models.ServerQuery;
-import models.ServerResult;
+import models.*;
 import server.DatabaseWorker;
 
 import java.lang.reflect.Field;
@@ -24,7 +21,7 @@ import java.util.HashMap;
  * Created by shrralis on 3/13/17.
  */
 @SuppressWarnings("unchecked")
-public abstract class DataFormController<T extends Owner> implements DataFormControllerInterface {
+public abstract class DataFormController<T extends Model> implements DataFormControllerInterface {
     private int iNumOfSelectedForSearch = 0;
     private OnMouseClickListener okClickListener = null;
     private OnMouseClickListener cancelClickListener = null;
@@ -45,7 +42,7 @@ public abstract class DataFormController<T extends Owner> implements DataFormCon
                 break;
         }
 
-        if (okClickListener != null) {
+        if ((type == Type.Search ^ success) && okClickListener != null) {
             okClickListener.onMouseClick();
         }
 
@@ -305,7 +302,7 @@ public abstract class DataFormController<T extends Owner> implements DataFormCon
                                 if (field1.getType() == ComboBox.class) {
                                     paramsForSearch.put(
                                             neededFieldName,
-                                            ((T) ((ComboBox) field1.get(this)).getSelectionModel().getSelectedItem())
+                                            ((Owner) ((ComboBox) field1.get(this)).getSelectionModel().getSelectedItem())
                                                     .getId()
                                     );
                                 } else if (field1.getType() == DatePicker.class) {

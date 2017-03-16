@@ -8,7 +8,7 @@ import java.util.HashMap;
 /**
  * Created by shrralis on 2/19/17.
  */
-public class ServerQuery<T extends Owner> implements Serializable {
+public class ServerQuery<T extends Model> implements Serializable {
     private String sTableName = null;
 
     private String sMethodName = null;
@@ -24,7 +24,7 @@ public class ServerQuery<T extends Owner> implements Serializable {
         mQueryParameters = queryParameters;
     }
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static <T extends Owner> ServerQuery create(@NotNull String tableName, @NotNull String methodName, T object,
+    public static <T extends Model> ServerQuery create(@NotNull String tableName, @NotNull String methodName, T object,
                                                        HashMap<String, Object> queryParameters) {
         return new ServerQuery(tableName, methodName, object, queryParameters);
     }

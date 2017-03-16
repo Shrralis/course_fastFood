@@ -24,10 +24,14 @@ public class Company extends Owner {
         try {
             country = from.getString("country");
             ceo_full_name = from.getString("ceo_full_name");
-            creation_year = from.getInt("year");
+            creation_year = from.getInt("creation_year");
             office_address = from.getString("office_address");
         } catch (SQLException ignored) {}
         return this;
+    }
+    @Override
+    public String toString() {
+        return name + " (" + country + ")";
     }
 
     public String getCountry() {

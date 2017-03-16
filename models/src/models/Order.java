@@ -3,14 +3,16 @@ package models;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.util.Date;
 
 /**
  * Created by shrralis on 3/15/17.
  */
 public class Order extends Owner {
-    public Date datetime = null;
-    public Fillation fillation = null;
+    public Date date = null;
+    public Time time = null;
+    public Filiation filiation = null;
 
     public Order() {}
     @SuppressWarnings("unused")
@@ -22,9 +24,10 @@ public class Order extends Owner {
         super.parse(from);
 
         try {
-            datetime = DateWorker.convertToDateTime(from.getString("datetime"));
-            fillation = ParseUtils.parseViaReflection(new Fillation(), get("SELECT * FROM `fillations` WHERE `id` = " +
-                    from.getInt("fillation") + ";", connection));
+            date = DateWorker.convertToDate(from.getString("date"));
+            time = DateWorker.convertToTime(from.getString("time"));
+            filiation = new List<>(get("SELECT * FROM `filiations` WHERE `id` = " +
+                    from.getInt("filiation") + ";", connection), Filiation.class, connection).get(0);
         } catch (SQLException ignored) {}
         return this;
     }
@@ -33,19 +36,27 @@ public class Order extends Owner {
         return connection.createStatement().executeQuery(sql);
     }
 
-    public Date getDatetime() {
-        return datetime;
+    public Date getDate() {
+        return date;
     }
 
-    public void setDatetime(Date datetime) {
-        this.datetime = datetime;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
-    public Fillation getFillation() {
-        return fillation;
+    public Time getTime() {
+        return time;
     }
 
-    public void setFillation(Fillation fillation) {
-        this.fillation = fillation;
+    public void setTime(Time time) {
+        this.time = time;
+    }
+
+    public Filiation getFiliation() {
+        return filiation;
+    }
+
+    public void setFiliation(Filiation filiation) {
+        this.filiation = filiation;
     }
 }
