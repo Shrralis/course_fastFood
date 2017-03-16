@@ -100,7 +100,7 @@ public class Controller {
             findDrinks.setOnAction(event -> {
                 HashMap<String, Object> params = new HashMap<>();
 
-                params.put("filiation", tableDrinks.getSelectionModel().getSelectedItem().getId());
+                params.put("filiation", tableFiliations.getSelectionModel().getSelectedItem().getId());
                 tableDrinks.setItems(
                         FXCollections.observableArrayList(
                                 DatabaseWorker.processQuery(
@@ -167,7 +167,7 @@ public class Controller {
                                 ).getObjects()
                         )
                 );
-                tabs.getSelectionModel().select(4);
+                tabs.getSelectionModel().select(5);
             });
             contextMenu.getItems().addAll(addToFiliation, addToOrder, findFiliations, findOrders);
             row.contextMenuProperty().bind(
@@ -203,7 +203,7 @@ public class Controller {
                                 ).getObjects()
                         )
                 );
-                tabs.getSelectionModel().select(4);
+                tabs.getSelectionModel().select(2);
             });
             findOrders.setOnAction(event -> {
                 HashMap<String, Object> params = new HashMap<>();
@@ -221,7 +221,7 @@ public class Controller {
                                 ).getObjects()
                         )
                 );
-                tabs.getSelectionModel().select(4);
+                tabs.getSelectionModel().select(5);
             });
             contextMenu.getItems().addAll(addToFiliation, addToOrder, findFiliations, findOrders);
             row.contextMenuProperty().bind(

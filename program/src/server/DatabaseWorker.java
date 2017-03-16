@@ -121,7 +121,7 @@ public class DatabaseWorker {
                             result = ServerResult.create(new List(statement.executeQuery(sql), Filiation.class, connection));
                         } else {
                             sql = "SELECT d.* FROM `filiations_has_drinks` fhd, `drinks` d" +
-                                    query.getMySQLCondition() + " AND fhm.`drink` = d.`id`;";
+                                    query.getMySQLCondition() + " AND fhd.`drink` = d.`id`;";
                             result = ServerResult.create(new List(statement.executeQuery(sql), Drink.class));
                         }
                         return result;
@@ -146,12 +146,12 @@ public class DatabaseWorker {
                         String sql;
 
                         if (query.getMySQLCondition().matches("(\\D|\\d)+drink(\\D|\\d)+")) {
-                            sql = "SELECT f.* FROM `orders_has_drinks` ohd, `orders` o" +
+                            sql = "SELECT o.* FROM `orders_has_drinks` ohd, `orders` o" +
                                     query.getMySQLCondition() + " AND ohd.`order` = o.`id`;";
                             result = ServerResult.create(new List(statement.executeQuery(sql), Order.class, connection));
                         } else {
                             sql = "SELECT d.* FROM `orders_has_drinks` ohd, `drinks` d" +
-                                    query.getMySQLCondition() + " AND ohm.`drink` = d.`id`;";
+                                    query.getMySQLCondition() + " AND ohd.`drink` = d.`id`;";
                             result = ServerResult.create(new List(statement.executeQuery(sql), Drink.class));
                         }
                         return result;
