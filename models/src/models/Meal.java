@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class Meal extends Owner {
     public Double calorie = null;
     public Double weight = null;
-    public Integer amount = null;
+    public Integer count = null;
     public Double price = null;
 
     public Meal() {}
@@ -26,7 +26,7 @@ public class Meal extends Owner {
             weight = from.getDouble("weight");
 
             try {
-                amount = from.getInt("amount");
+                count = from.getInt("count");
             } catch (SQLException ignored) {}
 
             price = from.getDouble("price");
@@ -50,12 +50,12 @@ public class Meal extends Owner {
         this.weight = weight;
     }
 
-    public Integer getAmount() {
-        return amount;
+    public Integer getCount() {
+        return count;
     }
 
-    public void setAmount(Integer amount) {
-        this.amount = amount;
+    public void setCount(Integer count) {
+        this.count = count;
     }
 
     public Double getPrice() {

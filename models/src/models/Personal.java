@@ -33,7 +33,7 @@ public class Personal extends Owner {
         try {
             surname = from.getString("surname");
             work = parseWork(from.getString("work"));
-            filiation = new List<>(get("SELECT * FROM `filiations` WHERE `id = " +
+            filiation = new List<>(get("SELECT * FROM `filiations` WHERE `id` = " +
                     from.getInt("filiation") + ";", connection), Filiation.class, connection).get(0);
         } catch (SQLException ignored) {}
         return this;

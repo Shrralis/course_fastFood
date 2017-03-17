@@ -162,6 +162,32 @@ public class ParseUtils {
             }
 
             result += "`" + fieldName + "`, ";
+
+            if (field.getType().equals(Meal.class)) {
+                Double price = ((Meal) field.get(object)).getPrice();
+                Integer count = ((Meal) field.get(object)).getCount();
+
+                if (price != null) {
+                    result += "`price`, ";
+                }
+
+                if (count != null) {
+                    result += "`count`, ";
+                }
+            }
+
+            if (field.getType().equals(Drink.class)) {
+                Double price = ((Drink) field.get(object)).getPrice();
+                Integer count = ((Drink) field.get(object)).getCount();
+
+                if (price != null) {
+                    result += "`price`, ";
+                }
+
+                if (count != null) {
+                    result += "`count`, ";
+                }
+            }
         }
 
         result = result.substring(0, result.lastIndexOf(", ")) + ") VALUES (";
@@ -223,12 +249,36 @@ public class ParseUtils {
             result += value;
         } else if (fieldType.equals(Date.class)) {
             result += "'" + DateWorker.convertDateToString((Date) value) + "'";
-        } else if (fieldType.equals(Time.class)) {
+        } else if (fieldType.equals(Time.class) || fieldType.equals(String.class) || fieldType.isEnum()) {
             result += "'" + value + "'";
-        } else if (fieldType.equals(String.class)) {
-            result += "'" + value.toString() + "'";
         } else if (Owner.class.isAssignableFrom(fieldType)) {
             result += ((Owner) value).getId();
+        }
+
+        if (fieldType.equals(Meal.class)) {
+            Double price = ((Meal) value).getPrice();
+            Integer count = ((Meal) value).getCount();
+
+            if (price != null) {
+                result += ", " + price;
+            }
+
+            if (count != null) {
+                result += ", " + count;
+            }
+        }
+
+        if (fieldType.equals(Drink.class)) {
+            Double price = ((Drink) value).getPrice();
+            Integer count = ((Drink) value).getCount();
+
+            if (price != null) {
+                result += ", " + price;
+            }
+
+            if (count != null) {
+                result += ", " + count;
+            }
         }
         return result;
     }

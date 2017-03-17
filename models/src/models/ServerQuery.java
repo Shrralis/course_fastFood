@@ -62,7 +62,7 @@ public class ServerQuery<T extends Model> implements Serializable {
                                 : "") + "`" + key.substring(key.indexOf(".") + 1) + "`";
                         result += (sKey.matches("^`(exp)(\\s|\\S)*`$") ? mQueryParameters.get(key) : (sKey +
                                 (mQueryParameters.get(key) instanceof Number ? " = " + mQueryParameters.get(key) :
-                                        (((String) mQueryParameters.get(key)).matches("^(NOT )?NULL$") ? " IS " +
+                                        (mQueryParameters.get(key).toString().matches("^(NOT )?NULL$") ? " IS " +
                                                 mQueryParameters.get(key) : " LIKE '%" + mQueryParameters.get(key) + "%'"))))
                                 + " AND ";
                     }
@@ -124,25 +124,7 @@ public class ServerQuery<T extends Model> implements Serializable {
     }
 
     public String getInsertMysqlQuery() throws IllegalAccessException {
-        String result = "INSERT INTO `" + sTableName + "` " + ParseUtils.parseViaReflectionToSqlInsert(mObjectToProcess) + ";";
-
-        if (sTableName.equalsIgnoreCase("store_has_model")) {
-            String[] temp = result.split(", `id`");
-            result = "";
-
-            for (String s : temp) {
-                result += s;
-            }
-            temp = result.split(", \\d\\);");
-            result = "";
-
-            for (String s : temp) {
-                result += s;
-            }
-
-            result += ");";
-        }
-        return result;
+        return "INSERT INTO `" + sTableName + "` " + ParseUtils.parseViaReflectionToSqlInsert(mObjectToProcess) + ";";
     }
 
     public String getUpdateMysqlQuery() throws IllegalAccessException {

@@ -29,8 +29,13 @@ public abstract class DataFormComboBoxController extends DataFormController impl
     @Override
     public void loadData() {
         for (Field field : this.getClass().getDeclaredFields()) {
-            if (field.getType().getSimpleName().equalsIgnoreCase("combobox")) {
-                setSomething((Class<? extends Owner>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0]);
+            if (field.getType().equals(ComboBox.class)) {
+                Class<?> type = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+
+                if (Owner.class.isAssignableFrom(type)) {
+                    System.out.println(type.getClass().getSimpleName());
+                    setComboBox((Class<? extends Owner>) type);
+                }
             }
         }
     }
@@ -41,7 +46,7 @@ public abstract class DataFormComboBoxController extends DataFormController impl
                 String fieldDaoName = "";
                 boolean empty = false;
 
-                if (field.getType() == ComboBox.class) {
+                if (field.getType().equals(ComboBox.class)) {
                     fieldDaoName = ((ComboBox) field.get(this)).getPromptText();
                     empty = ((ComboBox) field.get(this)).getValue() == null;
                 }
@@ -61,7 +66,7 @@ public abstract class DataFormComboBoxController extends DataFormController impl
         return false;
     }
 
-    private <T extends Owner> void setSomething(Class<T> clazz) {
+    private <T extends Owner> void setComboBox(Class<T> clazz) {
         String tableName = clazz.getSimpleName().toLowerCase();
 
         if (tableName.matches("^(\\D|\\d)+y$")) {

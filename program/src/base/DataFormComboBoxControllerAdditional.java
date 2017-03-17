@@ -1,6 +1,6 @@
 package base;
 
-import models.*;
+import models.Owner;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -10,23 +10,11 @@ import java.lang.reflect.Method;
  */
 public abstract class DataFormComboBoxControllerAdditional extends DataFormComboBoxController {
     public final <T extends Owner> void setObjectToSearch(T object) {
-        if (objectToProcess instanceof MealToFiliation) {
-            setToObjectToProcess(MealToFiliation.class, object);
-        } else if (objectToProcess instanceof DrinkToFiliation) {
-            setToObjectToProcess(DrinkToFiliation.class, object);
-        } else if (objectToProcess instanceof MealToOrder) {
-            setToObjectToProcess(MealToOrder.class, object);
-        } else {
-            setToObjectToProcess(DrinkToOrder.class, object);
-        }
-        objectToProcess = object;
-    }
-
-    private <T extends Owner, E extends Model> void setToObjectToProcess(Class<E> classOfDest, T value) {
-        for (Method method : classOfDest.getDeclaredMethods()) {
-            if (method.getName().matches("^set" + value.getClass().getSimpleName() + "(\\d|\\D)*$")) {
+        for (Method method : objectToProcess.getClass().getDeclaredMethods()) {
+            if (method.getName().matches("^set" + object.getClass().getSimpleName() + "(\\d|\\D)*$")) {
+                System.out.println(method.getName());
                 try {
-                    method.invoke(objectToProcess, value);
+                    method.invoke(objectToProcess, object);
                 } catch (IllegalAccessException | InvocationTargetException ignored) {}
             }
         }

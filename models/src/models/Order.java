@@ -31,6 +31,10 @@ public class Order extends Owner {
         } catch (SQLException ignored) {}
         return this;
     }
+    @Override
+    public String toString() {
+        return DateWorker.convertDateToString(date) + ", " + time + " — " + filiation;
+    }
 
     public ResultSet get(String sql, Connection connection) throws SQLException {
         return connection.createStatement().executeQuery(sql);

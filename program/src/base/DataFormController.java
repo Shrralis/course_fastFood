@@ -12,6 +12,7 @@ import models.*;
 import server.DatabaseWorker;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -300,11 +301,22 @@ public abstract class DataFormController<T extends Model> implements DataFormCon
                         for (Field field1 : getClass().getDeclaredFields()) {
                             if (field1.getName().equalsIgnoreCase(neededFieldName)) {
                                 if (field1.getType() == ComboBox.class) {
-                                    paramsForSearch.put(
-                                            neededFieldName,
-                                            ((Owner) ((ComboBox) field1.get(this)).getSelectionModel().getSelectedItem())
-                                                    .getId()
-                                    );
+                                    if (Owner.class.isAssignableFrom(
+                                            ((Class<?>)
+                                                    ((ParameterizedType) field1.getGenericType()).getActualTypeArguments()[0]))
+                                            ) {
+                                        paramsForSearch.put(
+                                                neededFieldName,
+                                                ((Owner) ((ComboBox) field1.get(this)).getSelectionModel().getSelectedItem())
+                                                        .getId()
+                                        );
+                                    } else {
+                                        paramsForSearch.put(
+                                                neededFieldName,
+                                                ((ComboBox) field1.get(this)).getSelectionModel().getSelectedItem()
+                                        );
+                                    }
+
                                 } else if (field1.getType() == DatePicker.class) {
                                     paramsForSearch.put(
                                             neededFieldName,

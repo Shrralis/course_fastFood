@@ -1,6 +1,9 @@
 package main_form;
 
-import base.*;
+import base.AlertsBuilder;
+import base.DataFormComboBoxControllerAdditional;
+import base.DataFormControllerInterface;
+import base.OnMouseClickListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -29,8 +32,9 @@ public class Controller {
     @FXML private TableView<Drink> tableDrinks;
     @FXML private TableView<Order> tableOrders;
     @FXML TableColumn<Order, String> columnDateTableOrders;
-    @FXML TableColumn<Order, String> columnTimeTableOrders;
     @FXML TableColumn<Order, String> columnFiliationTableOrders;
+    @FXML private TableView<Personal> tablePersonal;
+    @FXML TableColumn<Personal, String> columnFiliationTablePersonal;
 
     @FXML
     public void initialize() {
@@ -63,6 +67,13 @@ public class Controller {
             }
         });
         columnFiliationTableOrders.setCellValueFactory(param -> {
+            if (param.getValue() != null && param.getValue().getFiliation() != null) {
+                return new SimpleStringProperty(param.getValue().getFiliation().toString());
+            } else {
+                return new SimpleStringProperty("невідомо");
+            }
+        });
+        columnFiliationTablePersonal.setCellValueFactory(param -> {
             if (param.getValue() != null && param.getValue().getFiliation() != null) {
                 return new SimpleStringProperty(param.getValue().getFiliation().toString());
             } else {
@@ -136,7 +147,7 @@ public class Controller {
             findFiliations.setOnAction(event -> {
                 HashMap<String, Object> params = new HashMap<>();
 
-                params.put("meal", tableMeals.getSelectionModel().getSelectedItem().getId());
+                params.put("drink", tableMeals.getSelectionModel().getSelectedItem().getId());
                 tableFiliations.setItems(
                         FXCollections.observableArrayList(
                                 DatabaseWorker.processQuery(
@@ -154,7 +165,7 @@ public class Controller {
             findOrders.setOnAction(event -> {
                 HashMap<String, Object> params = new HashMap<>();
 
-                params.put("meal", tableMeals.getSelectionModel().getSelectedItem().getId());
+                params.put("drink", tableMeals.getSelectionModel().getSelectedItem().getId());
                 tableOrders.setItems(
                         FXCollections.observableArrayList(
                                 DatabaseWorker.processQuery(
@@ -308,8 +319,10 @@ public class Controller {
             deleteRecord(tableMeals);
         } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("напої")) {
             deleteRecord(tableDrinks);
-        } else {
+        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("замовлення")) {
             deleteRecord(tableOrders);
+        } else {
+            deleteRecord(tablePersonal);
         }
     }
     @FXML
@@ -330,8 +343,10 @@ public class Controller {
             loadDataToTableFromDatabase(tableMeals, null);
         } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("напої")) {
             loadDataToTableFromDatabase(tableDrinks, null);
-        } else {
+        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("замовлення")) {
             loadDataToTableFromDatabase(tableOrders, null);
+        } else {
+            loadDataToTableFromDatabase(tablePersonal, null);
         }
     }
 
@@ -355,9 +370,12 @@ public class Controller {
         } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("напої")) {
             tableView = tableDrinks;
             loader = new FXMLLoader(getClass().getResource("/drinks_data_form/data.fxml"));
-        } else {
+        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("замовлення")) {
             tableView = tableOrders;
             loader = new FXMLLoader(getClass().getResource("/orders_data_form/data.fxml"));
+        } else {
+            tableView = tablePersonal;
+            loader = new FXMLLoader(getClass().getResource("/personal_data_form/data.fxml"));
         }
         loader.load();
 
@@ -399,8 +417,10 @@ public class Controller {
             tableView = tableMeals;
         } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("напої")) {
             tableView = tableDrinks;
-        } else {
+        } else if (tabs.getSelectionModel().getSelectedItem().getText().equalsIgnoreCase("замовлення")) {
             tableView = tableOrders;
+        } else {
+            tableView = tablePersonal;
         }
 
         switch (type) {
@@ -424,6 +444,7 @@ public class Controller {
         loadDataToTableFromDatabase(tableMeals, null);
         loadDataToTableFromDatabase(tableDrinks, null);
         loadDataToTableFromDatabase(tableOrders, null);
+        loadDataToTableFromDatabase(tablePersonal, null);
     }
     @SuppressWarnings("unchecked")
     public void loadDataToTableFromDatabase(TableView tableView, HashMap<String, Object> params) {
