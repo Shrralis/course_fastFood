@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<ScrollPane fitToHeight="true" hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="225.0" prefWidth="272.0" vbarPolicy="NEVER" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="filiations_data_form.Controller">
+   <content>
+      <GridPane hgap="8.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="225.0" prefWidth="300.0">
+         <children>
+            <TextField fx:id="country" promptText="Країна">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </TextField>
+            <HBox alignment="CENTER_RIGHT" spacing="16.0" GridPane.rowIndex="5">
+               <children>
+                  <Button mnemonicParsing="false" onMouseClicked="#onMouseCancelClick" text="Відміна" />
+                  <Button mnemonicParsing="false" onMouseClicked="#onMouseOkClick" text="ОК" />
+               </children>
+               <padding>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </padding>
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </HBox>
+            <CheckBox fx:id="bCountry" mnemonicParsing="false" onAction="#onCheckBoxEnablerSelect" GridPane.columnIndex="1" />
+            <CheckBox fx:id="bGeneral" mnemonicParsing="false" onAction="#onCheckBoxEnablerSelect" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <CheckBox fx:id="bFast_food" mnemonicParsing="false" onAction="#onCheckBoxEnablerSelect" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <TextField fx:id="city" promptText="Місто" GridPane.rowIndex="1">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </TextField>
+            <TextField fx:id="address" promptText="Адреса" GridPane.rowIndex="2">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </TextField>
+            <CheckBox fx:id="bCity" mnemonicParsing="false" onAction="#onCheckBoxEnablerSelect" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <CheckBox fx:id="bAddress" mnemonicParsing="false" onAction="#onCheckBoxEnablerSelect" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <CheckBox fx:id="general" mnemonicParsing="false" text="є головною філією?" GridPane.rowIndex="3" />
+            <ComboBox fx:id="fast_food" prefHeight="27.0" prefWidth="260.0" promptText="заклад..." GridPane.rowIndex="4" />
+         </children>
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="274.0" minWidth="10.0" prefWidth="251.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="81.0" minWidth="10.0" prefWidth="16.0" />
+         </columnConstraints>
+         <padding>
+            <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+         </padding>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+      </GridPane>
+   </content>
+</ScrollPane>
