@@ -100,7 +100,7 @@ public class DatabaseWorker {
                         String sql;
 
                         if (query.getMySQLCondition().matches("(\\D|\\d)+meal(\\D|\\d)+")) {
-                            sql = "SELECT f.*, fhm.`price` FROM `filiations_has_meals` fhm, `filiations` f" +
+                            sql = "SELECT f.* FROM `filiations_has_meals` fhm, `filiations` f" +
                                     query.getMySQLCondition() + " AND fhm.`filiation` = f.`id`;";
                             result = ServerResult.create(new List(statement.executeQuery(sql), Filiation.class, connection));
                         } else {
